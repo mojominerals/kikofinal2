@@ -5,20 +5,47 @@ import { trackEvent } from '../services/metaPixel';
 
 const Contact: React.FC = () => {
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setStatus('loading');
+    setErrorMessage('');
+
     trackEvent('Contact', {
-      method: 'email_form',
+      method: 'api_form',
       content_name: 'Booking Inquiry'
     });
-    const subject = encodeURIComponent(`KIKO BOOKING ANFRAGE von ${formState.name}`);
-    const body = encodeURIComponent(`Name: ${formState.name}\nEmail: ${formState.email}\n\nNachricht:\n${formState.message}`);
-    window.location.href = `mailto:kikomedy@gmail.com?subject=${subject}&body=${body}`;
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formState),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus('success');
+        setFormState({ name: '', email: '', message: '' });
+      } else {
+        setStatus('error');
+        const msg = data.details ? `${data.error} (${data.details})` : (data.error || 'Etwas ist schief gelaufen.');
+        setErrorMessage(msg);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setStatus('error');
+      setErrorMessage('Verbindung zum Server fehlgeschlagen.');
+    }
   };
 
   return (
@@ -35,51 +62,77 @@ const Contact: React.FC = () => {
               <h2 className="text-6xl md:text-8xl font-display text-jet mb-2 text-center uppercase mt-6">BOOKING</h2>
               <p className="font-comic text-2xl text-vest mb-10 text-center">(Ich geh wahrscheinlich eh nicht ran)</p>
 
-              <form className="space-y-6" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {status === 'success' ? (
+                <div className="bg-green-100 border-4 border-green-600 p-8 text-center space-y-4">
+                  <h3 className="font-display text-4xl text-green-700 uppercase">BOOM! GESENDET!</h3>
+                  <p className="font-comic text-xl text-jet">Deine Nachricht ist im Äther verschwunden. Vielleicht antworte ich sogar.</p>
+                  <button 
+                    onClick={() => setStatus('idle')}
+                    className="bg-jet text-white font-display text-2xl px-8 py-3 border-4 border-jet hover:bg-banana hover:text-jet transition-all"
+                  >
+                    NOCH EINE SCHICKEN?
+                  </button>
+                </div>
+              ) : (
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-jet font-bold mb-2 uppercase text-sm">Dein Name</label>
+                      <input 
+                        type="text" 
+                        name="name"
+                        required
+                        value={formState.name}
+                        placeholder="z.B. Ein besorgter Fan"
+                        className="w-full bg-sky/10 border-4 border-jet p-4 font-black focus:outline-none focus:bg-banana/20"
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-jet font-bold mb-2 uppercase text-sm">E-Mail Adresse</label>
+                      <input 
+                        type="email" 
+                        name="email"
+                        required
+                        value={formState.email}
+                        placeholder="deine@mail.com"
+                        className="w-full bg-sky/10 border-4 border-jet p-4 font-black focus:outline-none focus:bg-banana/20"
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+
                   <div>
-                    <label className="block text-jet font-bold mb-2 uppercase text-sm">Dein Name</label>
-                    <input 
-                      type="text" 
-                      name="name"
+                    <label className="block text-jet font-bold mb-2 uppercase text-sm">Nachricht</label>
+                    <textarea 
+                      name="message"
                       required
-                      placeholder="z.B. Ein besorgter Fan"
+                      rows={4} 
+                      value={formState.message}
+                      placeholder="Mach's lustig, ich langweile mich schnell."
                       className="w-full bg-sky/10 border-4 border-jet p-4 font-black focus:outline-none focus:bg-banana/20"
                       onChange={handleChange}
-                    />
+                    ></textarea>
                   </div>
-                  <div>
-                    <label className="block text-jet font-bold mb-2 uppercase text-sm">E-Mail Adresse</label>
-                    <input 
-                      type="email" 
-                      name="email"
-                      required
-                      placeholder="deine@mail.com"
-                      className="w-full bg-sky/10 border-4 border-jet p-4 font-black focus:outline-none focus:bg-banana/20"
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
 
-                <div>
-                  <label className="block text-jet font-bold mb-2 uppercase text-sm">Nachricht</label>
-                  <textarea 
-                    name="message"
-                    required
-                    rows={4} 
-                    placeholder="Mach's lustig, ich langweile mich schnell."
-                    className="w-full bg-sky/10 border-4 border-jet p-4 font-black focus:outline-none focus:bg-banana/20"
-                    onChange={handleChange}
-                  ></textarea>
-                </div>
+                  {status === 'error' && (
+                    <div className="text-red-600 font-bold text-center bg-red-50 p-4 border-2 border-red-600 space-y-2">
+                      <p>FEHLER: {errorMessage}</p>
+                      {errorMessage.includes('Verbindung') && (
+                        <p className="text-xs font-comic opacity-70">Tipp: Prüfe dein App-Passwort und die E-Mail in den Secrets.</p>
+                      )}
+                    </div>
+                  )}
 
-                <button 
-                  type="submit"
-                  className="w-full bg-vest text-white font-display text-4xl py-6 hover:bg-jet hover:text-banana transition-all border-4 border-jet shadow-flyer uppercase"
-                >
-                  INS LEERE SENDEN
-                </button>
-              </form>
+                  <button 
+                    type="submit"
+                    disabled={status === 'loading'}
+                    className={`w-full bg-vest text-white font-display text-4xl py-6 hover:bg-jet hover:text-banana transition-all border-4 border-jet shadow-flyer uppercase ${status === 'loading' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {status === 'loading' ? 'WIRD GESCHICKT...' : 'INS LEERE SENDEN'}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
 
