@@ -14,8 +14,9 @@ import Roast from './components/Roast';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Popup from './components/Popup';
+import AvatarMarquee from './components/AvatarMarquee';
 
-const KIKO_HEADSHOT = "https://kikomedy.com/img/Kiko_Head_001-01-frei_cropped.png";
+const KIKO_HEADSHOT = "https://i.ibb.co/D0nvGVC/Kiko-Head-001-01-frei-cropped-removebg-preview.png";
 const FALLBACK_HEADSHOT = "https://i.ibb.co/STXFBKy/Whats-App-Image-2026-02-03-at-14-43-05-removebg-preview.png"; // Using the logo as fallback
 
 // Comedic typewriter effect component
@@ -189,6 +190,8 @@ const App: React.FC = () => {
       {/* Scroll-based typing reveal for the Hero sub-headline */}
       <Hero />
 
+      <AvatarMarquee />
+
       <ComedicSection id="about">
         <About />
       </ComedicSection>
@@ -203,6 +206,8 @@ const App: React.FC = () => {
       <ComedicSection id="videos">
         <Videos />
       </ComedicSection>
+
+      <AvatarMarquee />
 
       <ComedicSection id="shows">
         <Shows />

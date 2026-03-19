@@ -5,7 +5,7 @@ import { ShoppingBag, Palmtree, Star, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { trackEvent } from '../services/metaPixel';
 
-const KIKO_HEADSHOT = "https://kikomedy.com/img/Kiko_Head_001-01-frei_cropped.png";
+const KIKO_HEADSHOT = "https://i.ibb.co/D0nvGVC/Kiko-Head-001-01-frei-cropped-removebg-preview.png";
 
 const items: MerchItem[] = [
   { id: '1', name: 'KIKO "Glückssocken"', price: '19 CHF', tagline: 'Riechen nach Erfolg und Käse.', image: 'https://images.unsplash.com/photo-1582966239100-80c71488a573?auto=format&fit=crop&q=80&w=400&h=400' },

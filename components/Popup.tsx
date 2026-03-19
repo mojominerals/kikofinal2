@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { X, Instagram, Palmtree } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const KIKO_HEADSHOT = "https://kikomedy.com/img/Kiko_Head_001-01-frei_cropped.png";
+const KIKO_HEADSHOT = "https://i.ibb.co/D0nvGVC/Kiko-Head-001-01-frei-cropped-removebg-preview.png";
 const FALLBACK_HEADSHOT = "https://i.ibb.co/STXFBKy/Whats-App-Image-2026-02-03-at-14-43-05-removebg-preview.png";
 
 const Popup: React.FC = () => {
