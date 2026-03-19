@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KIKO | Nöd Dä Hellscht Tour 2026</title>
+    <script>
+      // Aggressive fix for "Cannot set property fetch of #<Window> which has only a getter"
+      // This happens when external scripts try to polyfill fetch in a restricted environment.
+      (function() {
+        try {
+          var originalFetch = window.fetch;
+          var descriptor = Object.getOwnPropertyDescriptor(window, 'fetch');
+          if (descriptor && descriptor.configurable) {
+            delete window.fetch;
+            Object.defineProperty(window, 'fetch', {
+              value: originalFetch,
+              writable: true,
+              configurable: true,
+              enumerable: true
+            });
+          } else if (descriptor && !descriptor.set) {
+            // If it's not configurable, we try to add a setter if possible to prevent the error
+            Object.defineProperty(window, 'fetch', {
+              get: function() { return originalFetch; },
+              set: function(v) { console.warn('Prevented fetch override attempt'); },
+              configurable: true,
+              enumerable: true
+            });
+          }
+        } catch (e) {
+          // If all else fails, we just log it
+          console.warn('Fetch protection failed', e);
+        }
+      })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;900&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <script src="https://embed.eventfrog.ch/api/scripts/embed/event.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              banana: '#f8e434',      // The bright tour yellow
+              sky: '#64b5f6',         // The bright blue sky
+              alpine: '#76b34b',      // The green pastures
+              vest: '#c62828',        // The traditional red vest
+              cow: '#795548',         // Swiss cow brown
+              jet: '#050505',
+            },
+            fontFamily: {
+              display: ['"Bebas Neue"', 'sans-serif'],
+              body: ['"Inter"', 'sans-serif'],
+              comic: ['"Permanent Marker"', 'cursive'],
+            },
+            boxShadow: {
+              'banana': '4px 4px 0px 0px rgba(212, 160, 23, 1)',
+              'flyer': '8px 8px 0px 0px rgba(0, 0, 0, 1)',
+              '3d-yellow': '0 4px 0 #d4a017, 0 8px 0 rgba(0,0,0,1)',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #64b5f6;
+        color: #050505;
+        overflow-x: hidden;
+      }
+      .banana-text {
+        color: #f8e434;
+        text-shadow: 
+          -2px -2px 0 #000,  
+           2px -2px 0 #000,
+          -2px  2px 0 #000,
+           2px  2px 0 #000,
+           6px  6px 0 #d4a017,
+           8px  8px 0 #000;
+      }
+      .alpine-gradient {
+        background: linear-gradient(to bottom, #64b5f6 0%, #64b5f6 40%, #76b34b 100%);
+      }
+      .paper-texture {
+        background-image: url("https://www.transparenttextures.com/patterns/pinstripe-dark.png");
+        background-attachment: fixed;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 12px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #64b5f6;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #f8e434;
+        border: 3px solid #050505;
+        border-radius: 0px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #c62828;
+      }
+      @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      .animate-marquee {
+        animation: marquee 25s linear infinite;
+      }
+    </style>
+</head>
+  <body class="paper-texture">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
