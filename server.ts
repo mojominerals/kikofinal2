@@ -46,11 +46,13 @@ async function startServer() {
       try {
         await transporter.verify();
         console.log('Server is ready to take our messages');
-      } catch (verifyError) {
+      } catch (verifyError: any) {
         console.error('SMTP Verification Error:', verifyError);
+        const errorMessage = verifyError.message || 'Unbekannter Fehler';
+        const errorCode = verifyError.code || 'Kein Code';
         return res.status(500).json({ 
-          error: 'Verbindung zum E-Mail-Server fehlgeschlagen.',
-          details: verifyError instanceof Error ? verifyError.message : 'Unbekannter Fehler'
+          error: `E-Mail-Server Fehler: ${errorMessage} (Code: ${errorCode})`,
+          details: errorMessage
         });
       }
 
